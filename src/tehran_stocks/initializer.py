@@ -12,7 +12,7 @@ def init_db():
         print("making database folder ...")
         os.mkdir(path)
     models.create()
-    print(f"DataBase created in: {path}")
+    print("DataBase created in: {}".format((path)))
 
 
 def fill_db():
@@ -33,4 +33,3 @@ def fill_db():
         print("or use tehran_stocks.update_group(id) ")
         print("For more info go to:")
         print("https://github.com/ghodsizadeh/tehran-stocks")
-
