@@ -22,6 +22,6 @@ setup(
     packages=find_packages(where="tehran_stocks"),
     install_requires=["pandas", "sqlalchemy", "requests"],
     zip_safe=False,
-    python_requires=">=3.6",
+    python_requires=">=3.5",
     scripts=["bin/ts-get", "bin/ts-get.bat"],
 )
