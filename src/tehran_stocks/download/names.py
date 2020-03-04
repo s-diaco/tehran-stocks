@@ -32,7 +32,7 @@ def get_stock_detail(stock_id: str, group_id: int) -> "stock":
     params
     ----------------
     stockk_id :
-        an str of an interger or an integer if not started by 0 whicj represent  the Id 
+        an str of an interger or an integer if not started by 0 whicj represent  the Id
         in tsetmc website i.e. arg i={stock_id} inside  the url
     group_id:
         int: number that represent group of stock
@@ -41,12 +41,14 @@ def get_stock_detail(stock_id: str, group_id: int) -> "stock":
     exist = Stocks.query.filter_by(code=stock_id).first()
     if exist:
         return "exist"
-    url = "http://www.tsetmc.com/Loader.aspx?ParTree=151311&i={}".format(stock_id)
+    url = "http://www.tsetmc.com/Loader.aspx?ParTree=151311&i={}".format(
+        stock_id)
     r = requests.get(url)
     stock = {"code": stock_id}
     stock["instId"] = re.findall(r"InstrumentID='([\w\d]*)',", r.text)[0]
     stock["insCode"] = (
-        stock_id if re.findall(r"InsCode='(\d*)',", r.text)[0] == stock_id else 0
+        stock_id if re.findall(r"InsCode='(\d*)',",
+                               r.text)[0] == stock_id else 0
     )
     stock["baseVol"] = float(re.findall(r"BaseVol=([\.\d]*),", r.text)[0])
     try:
@@ -56,17 +58,19 @@ def get_stock_detail(stock_id: str, group_id: int) -> "stock":
     try:
         stock["group_name"] = re.findall(r"LSecVal='([\D]*)',", r.text)[0]
     except:
-        return        
+        return
     try:
         stock["title"] = re.findall(r"Title='([\D]*)',", r.text)[0]
     except:
         return
     try:
-        stock["sectorPe"] = float(re.findall(r"SectorPE='([\.\d]*)',", r.text)[0])
+        stock["sectorPe"] = float(re.findall(
+            r"SectorPE='([\.\d]*)',", r.text)[0])
     except:
         stock["sectorPe"] = None
     try:
-        stock["shareCount"] = float(re.findall(r"ZTitad=([\.\d]*),", r.text)[0])
+        stock["shareCount"] = float(
+            re.findall(r"ZTitad=([\.\d]*),", r.text)[0])
     except:
         stock["shareCount"] = None
 
@@ -83,7 +87,7 @@ def get_stock_detail(stock_id: str, group_id: int) -> "stock":
     try:
         db.session.commit()
     except:
-        print(f"stock with code {stock_id} exist")
+        print("stock with code {} exist".format(stock_id))
         db.session.rollback()
     return stock
 
@@ -103,7 +107,8 @@ def fill_stock_table():
         stocks = get_stock_ids(group)
         _ = [get_stock_detail(s, int(group)) for s in stocks]
         print(
-            f"downloading group: {group}, changes: {(i+1)/len(groups)*100:.1f}% completed",
+            "downloading group: "+group+" changes: " +
+            (i+1)/len(groups)*100+" completed",
             end="\r",
         )
 
@@ -112,4 +117,3 @@ def fill_stock_table():
     print(" downloader.download_all() # for downloading all data")
     print("downloader.download_group(group_id) # to download specefic group data")
     print("downloader.download_stock(stock) to downloand stock specefic")
-

@@ -11,7 +11,7 @@ from tehran_stocks.models import StockPrice, Stocks
 def update_stock_price(code: str):
     """
     Update (or download for the first time) Stock prices
-    
+
 
     params:
     ----------------
@@ -27,7 +27,8 @@ def update_stock_price(code: str):
     stock.update() #Done
     """
     try:
-        q = f"select dtyyyymmdd as date from stock_price where code = {code}"
+        q = "select dtyyyymmdd as date from stock_price where code = {}".format(
+            (code))
         temp = pd.read_sql(q, db.engine)
         url = "http://www.tsetmc.com/tsev2/data/Export-txt.aspx?t=i&a=1&b=0&i={}"
         df = pd.read_csv(url.format(code))
@@ -52,14 +53,15 @@ def update_group(code):
         return
     for i, stock in enumerate(stocks):
         update_stock_price(stock[0])
-        print(f"group progress: {100*(i+1)/len(stocks):.1f}%", end="\r")
+        print("group progress: {:.1f}%".format(
+            (100*(i+1)/len(stocks))), end="\r")
 
 
 def get_all_price():
     codes = db.session.query(db.distinct(Stocks.group_code)).all()
     for i, code in enumerate(codes):
-        print(f"                         total progress: {100*(i+1)/len(codes):.2f}%", end="\r")
+        print("                         total progress: {:.2f}%".format(
+            (100*(i+1)/len(codes))), end="\r")
         update_group(code[0])
 
     print("Download Finished.")
-
